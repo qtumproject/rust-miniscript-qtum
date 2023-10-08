@@ -108,7 +108,7 @@ fn main() {
     assert_eq!(max_sat_wt, 269);
 
     // Compute the bitcoin address and check if it matches
-    let network = Network::Bitcoin;
+    let network = Network::Qtum;
     let addr = real_desc.address(network).unwrap();
     let expected_addr = bitcoin::Address::from_str(
         "bc1pcc8ku64slu3wu04a6g376d2s8ck9y5alw5sus4zddvn8xgpdqw2swrghwx",

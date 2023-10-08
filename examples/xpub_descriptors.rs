@@ -44,14 +44,14 @@ fn p2wsh<C: Verification>(secp: &Secp256k1<C>) -> Address {
         .unwrap()
         .derived_descriptor(&secp)
         .unwrap()
-        .address(Network::Bitcoin)
+        .address(Network::Qtum)
         .unwrap();
 
     let expected = bitcoin::Address::from_str(
         "bc1qpq2cfgz5lktxzr5zqv7nrzz46hsvq3492ump9pz8rzcl8wqtwqcspx5y6a",
     )
     .unwrap()
-    .require_network(Network::Bitcoin)
+    .require_network(Network::Qtum)
     .unwrap();
     assert_eq!(address, expected);
     address
@@ -67,12 +67,12 @@ fn p2sh_p2wsh<C: Verification>(secp: &Secp256k1<C>) -> Address {
         .unwrap()
         .derived_descriptor(&secp, 5)
         .unwrap()
-        .address(Network::Bitcoin)
+        .address(Network::Qtum)
         .unwrap();
 
     let expected = Address::from_str("325zcVBN5o2eqqqtGwPjmtDd8dJRyYP82s")
         .unwrap()
-        .require_network(Network::Bitcoin)
+        .require_network(Network::Qtum)
         .unwrap();
     assert_eq!(address, expected);
     address

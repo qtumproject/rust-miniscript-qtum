@@ -38,7 +38,7 @@ fn main() -> ! {
 
     // Derive the P2SH address
     let p2sh_addr = desc
-        .address(miniscript::bitcoin::Network::Bitcoin)
+        .address(miniscript::bitcoin::Network::Qtum)
         .unwrap()
         .to_string();
     hprintln!("p2sh address {}", p2sh_addr).unwrap();

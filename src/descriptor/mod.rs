@@ -1050,7 +1050,7 @@ mod tests {
             )
         );
         assert_eq!(
-            bare.address(Network::Bitcoin).unwrap_err().to_string(),
+            bare.address(Network::Qtum).unwrap_err().to_string(),
             "Bare descriptors don't have address"
         );
 
@@ -1085,7 +1085,7 @@ mod tests {
                 .into_script()
         );
         assert_eq!(
-            pkh.address(Network::Bitcoin,).unwrap().to_string(),
+            pkh.address(Network::Qtum,).unwrap().to_string(),
             "1D7nRvrRgzCg9kYBwhPH3j3Gs6SmsRg3Wq"
         );
 
@@ -1107,7 +1107,7 @@ mod tests {
                 .into_script()
         );
         assert_eq!(
-            wpkh.address(Network::Bitcoin,).unwrap().to_string(),
+            wpkh.address(Network::Qtum,).unwrap().to_string(),
             "bc1qsn57m9drscflq5nl76z6ny52hck5w4x5wqd9yt"
         );
 
@@ -1130,7 +1130,7 @@ mod tests {
                 .into_script()
         );
         assert_eq!(
-            shwpkh.address(Network::Bitcoin,).unwrap().to_string(),
+            shwpkh.address(Network::Qtum,).unwrap().to_string(),
             "3PjMEzoveVbvajcnDDuxcJhsuqPHgydQXq"
         );
 
@@ -1153,7 +1153,7 @@ mod tests {
                 .into_script()
         );
         assert_eq!(
-            sh.address(Network::Bitcoin,).unwrap().to_string(),
+            sh.address(Network::Qtum,).unwrap().to_string(),
             "3HDbdvM9CQ6ASnQFUkWw6Z4t3qNwMesJE9"
         );
 
@@ -1180,7 +1180,7 @@ mod tests {
                 .into_script()
         );
         assert_eq!(
-            wsh.address(Network::Bitcoin,).unwrap().to_string(),
+            wsh.address(Network::Qtum,).unwrap().to_string(),
             "bc1qlymeahyfsv2jm3upw3urqp6m65ufde9seedl7umh0lth6yjt5zzsk33tv6"
         );
 
@@ -1203,7 +1203,7 @@ mod tests {
                 .into_script()
         );
         assert_eq!(
-            shwsh.address(Network::Bitcoin,).unwrap().to_string(),
+            shwsh.address(Network::Qtum,).unwrap().to_string(),
             "38cTksiyPT2b1uGRVbVqHdDhW9vKs84N6Z"
         );
     }
@@ -1711,14 +1711,14 @@ mod tests {
                 .unwrap()
                 .derived_descriptor(&secp_ctx)
                 .unwrap()
-                .address(bitcoin::Network::Bitcoin)
+                .address(bitcoin::Network::Qtum)
                 .unwrap();
             let addr_two = desc_two
                 .at_derivation_index(index)
                 .unwrap()
                 .derived_descriptor(&secp_ctx)
                 .unwrap()
-                .address(bitcoin::Network::Bitcoin)
+                .address(bitcoin::Network::Qtum)
                 .unwrap();
             let addr_expected = bitcoin::Address::from_str(raw_addr_expected)
                 .unwrap()

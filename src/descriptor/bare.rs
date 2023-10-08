@@ -260,7 +260,7 @@ impl<Pk: MiniscriptKey + ToPublicKey> Pkh<Pk> {
     pub fn script_pubkey(&self) -> ScriptBuf {
         // Fine to hard code the `Network` here because we immediately call
         // `script_pubkey` which does not use the `network` field of `Address`.
-        let addr = self.address(Network::Bitcoin);
+        let addr = self.address(Network::Qtum);
         addr.script_pubkey()
     }
 

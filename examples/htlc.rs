@@ -65,7 +65,7 @@ fn main() {
 
     // Get the address for this Wsh descriptor.v
     assert_eq!(
-        format!("{}", htlc_descriptor.address(Network::Bitcoin)),
+        format!("{}", htlc_descriptor.address(Network::Qtum)),
         "bc1qmpfcw7he9z5d9ftfe8qw699azmm2sr8fen903fs4plv007yx0t3qxfmqv5"
     );
 }
