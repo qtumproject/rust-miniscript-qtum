@@ -16,8 +16,8 @@
 use core::marker::PhantomData;
 use core::{fmt, hash, str};
 
-use bitcoin::script;
-use bitcoin::taproot::{LeafVersion, TapLeafHash};
+use qtum::script;
+use qtum::taproot::{LeafVersion, TapLeafHash};
 
 use self::analyzable::ExtParams;
 pub use self::context::{BareCtx, Legacy, Segwitv0, Tap};
@@ -207,24 +207,24 @@ impl<Ctx: ScriptContext> Miniscript<Ctx::Key, Ctx> {
     ///
     /// ```rust
     /// use miniscript::{Miniscript, Segwitv0, Tap};
-    /// use miniscript::bitcoin::secp256k1::XOnlyPublicKey;
-    /// use miniscript::bitcoin::hashes::hex::FromHex;
+    /// use miniscript::qtum::secp256k1::XOnlyPublicKey;
+    /// use miniscript::qtum::hashes::hex::FromHex;
     ///
-    /// type Segwitv0Script = Miniscript<bitcoin::PublicKey, Segwitv0>;
+    /// type Segwitv0Script = Miniscript<qtum::PublicKey, Segwitv0>;
     /// type TapScript = Miniscript<XOnlyPublicKey, Tap>;
     ///
     /// // parse x-only miniscript in Taproot context
-    /// let tapscript_ms = TapScript::parse(&bitcoin::ScriptBuf::from_hex(
+    /// let tapscript_ms = TapScript::parse(&qtum::ScriptBuf::from_hex(
     ///     "202788ee41e76f4f3af603da5bc8fa22997bc0344bb0f95666ba6aaff0242baa99ac",
     /// ).expect("Even length hex"))
     ///     .expect("Xonly keys are valid only in taproot context");
     /// // tapscript fails decoding when we use them with compressed keys
-    /// let err = TapScript::parse(&bitcoin::ScriptBuf::from_hex(
+    /// let err = TapScript::parse(&qtum::ScriptBuf::from_hex(
     ///     "21022788ee41e76f4f3af603da5bc8fa22997bc0344bb0f95666ba6aaff0242baa99ac",
     /// ).expect("Even length hex"))
     ///     .expect_err("Compressed keys cannot be used in Taproot context");
     /// // Segwitv0 succeeds decoding with full keys.
-    /// Segwitv0Script::parse(&bitcoin::ScriptBuf::from_hex(
+    /// Segwitv0Script::parse(&qtum::ScriptBuf::from_hex(
     ///     "21022788ee41e76f4f3af603da5bc8fa22997bc0344bb0f95666ba6aaff0242baa99ac",
     /// ).expect("Even length hex"))
     ///     .expect("Compressed keys are allowed in Segwit context");
@@ -462,7 +462,7 @@ serde_string_impl_pk!(Miniscript, "a miniscript", Ctx; ScriptContext);
 
 /// Provides a Double SHA256 `Hash` type that displays forwards.
 pub mod hash256 {
-    use bitcoin::hashes::{hash_newtype, sha256d};
+    use qtum::hashes::{hash_newtype, sha256d};
 
     hash_newtype! {
         /// A hash256 of preimage.
@@ -478,10 +478,10 @@ mod tests {
     use core::str;
     use core::str::FromStr;
 
-    use bitcoin::hashes::{hash160, sha256, Hash};
-    use bitcoin::secp256k1::XOnlyPublicKey;
-    use bitcoin::taproot::TapLeafHash;
-    use bitcoin::{self, secp256k1, Sequence};
+    use qtum::hashes::{hash160, sha256, Hash};
+    use qtum::secp256k1::XOnlyPublicKey;
+    use qtum::taproot::TapLeafHash;
+    use qtum::{self, secp256k1, Sequence};
     use sync::Arc;
 
     use super::{Miniscript, ScriptContext, Segwitv0, Tap};
@@ -492,10 +492,10 @@ mod tests {
     use crate::test_utils::{StrKeyTranslator, StrXOnlyKeyTranslator};
     use crate::{hex_script, ExtParams, Satisfier, ToPublicKey, TranslatePk};
 
-    type Segwitv0Script = Miniscript<bitcoin::PublicKey, Segwitv0>;
-    type Tapscript = Miniscript<bitcoin::secp256k1::XOnlyPublicKey, Tap>;
+    type Segwitv0Script = Miniscript<qtum::PublicKey, Segwitv0>;
+    type Tapscript = Miniscript<qtum::secp256k1::XOnlyPublicKey, Tap>;
 
-    fn pubkeys(n: usize) -> Vec<bitcoin::PublicKey> {
+    fn pubkeys(n: usize) -> Vec<qtum::PublicKey> {
         let mut ret = Vec::with_capacity(n);
         let secp = secp256k1::Secp256k1::new();
         let mut sk = [0; 32];
@@ -504,7 +504,7 @@ mod tests {
             sk[1] = (i >> 8) as u8;
             sk[2] = (i >> 16) as u8;
 
-            let pk = bitcoin::PublicKey {
+            let pk = qtum::PublicKey {
                 inner: secp256k1::PublicKey::from_secret_key(
                     &secp,
                     &secp256k1::SecretKey::from_slice(&sk[..]).expect("secret key"),
@@ -517,7 +517,7 @@ mod tests {
     }
 
     fn string_rtt<Ctx: ScriptContext>(
-        script: Miniscript<bitcoin::PublicKey, Ctx>,
+        script: Miniscript<qtum::PublicKey, Ctx>,
         expected_debug: &str,
         expected_display: &str,
     ) {
@@ -535,7 +535,7 @@ mod tests {
     }
 
     fn string_display_debug_test<Ctx: ScriptContext>(
-        script: Miniscript<bitcoin::PublicKey, Ctx>,
+        script: Miniscript<qtum::PublicKey, Ctx>,
         expected_debug: &str,
         expected_display: &str,
     ) {
@@ -663,7 +663,7 @@ mod tests {
 
     #[test]
     fn basic() {
-        let pk = bitcoin::PublicKey::from_str(
+        let pk = qtum::PublicKey::from_str(
             "\
              020202020202020202020202020202020202020202020202020202020202020202\
              ",
@@ -998,14 +998,14 @@ mod tests {
         )
         .unwrap();
 
-        // Now test that bitcoin::PublicKey works with Taproot context
-        Miniscript::<bitcoin::PublicKey, Tap>::from_str_insane(
+        // Now test that qtum::PublicKey works with Taproot context
+        Miniscript::<qtum::PublicKey, Tap>::from_str_insane(
             "pk(022788ee41e76f4f3af603da5bc8fa22997bc0344bb0f95666ba6aaff0242baa99)",
         )
         .unwrap();
 
         // uncompressed keys should not be allowed
-        Miniscript::<bitcoin::PublicKey, Tap>::from_str_insane(
+        Miniscript::<qtum::PublicKey, Tap>::from_str_insane(
             "pk(04eed24a081bf1b1e49e3300df4bebe04208ac7e516b6f3ea8eb6e094584267c13483f89dcf194132e12238cc5a34b6b286fc7990d68ed1db86b69ebd826c63b29)"
         )
         .unwrap_err();
@@ -1078,10 +1078,10 @@ mod tests {
                 &self,
                 _pk: &Pk,
                 _h: &TapLeafHash,
-            ) -> Option<bitcoin::taproot::Signature> {
-                Some(bitcoin::taproot::Signature {
+            ) -> Option<qtum::taproot::Signature> {
+                Some(qtum::taproot::Signature {
                     sig: self.0,
-                    hash_ty: bitcoin::sighash::TapSighashType::Default,
+                    hash_ty: qtum::sighash::TapSighashType::Default,
                 })
             }
         }
@@ -1101,7 +1101,7 @@ mod tests {
         .unwrap();
         let ms_trans = ms.translate_pk(&mut StrKeyTranslator::new()).unwrap();
         let enc = ms_trans.encode();
-        let ms = Miniscript::<bitcoin::PublicKey, Segwitv0>::parse_insane(&enc).unwrap();
+        let ms = Miniscript::<qtum::PublicKey, Segwitv0>::parse_insane(&enc).unwrap();
         assert_eq!(ms_trans.encode(), ms.encode());
     }
 
@@ -1110,7 +1110,7 @@ mod tests {
         // test that parsing raw hash160 does not work with
         let hash160_str = "e9f171df53e04b270fa6271b42f66b0f4a99c5a2";
         let ms_str = &format!("c:expr_raw_pkh({})", hash160_str);
-        type SegwitMs = Miniscript<bitcoin::PublicKey, Segwitv0>;
+        type SegwitMs = Miniscript<qtum::PublicKey, Segwitv0>;
 
         // Test that parsing raw hash160 from string does not work without extra features
         SegwitMs::from_str(ms_str).unwrap_err();
@@ -1138,7 +1138,7 @@ mod tests {
     fn translate_tests() {
         let ms = Miniscript::<String, Segwitv0>::from_str("pk(A)").unwrap();
         let mut t = StrKeyTranslator::new();
-        let uncompressed = bitcoin::PublicKey::from_str("0400232a2acfc9b43fa89f1b4f608fde335d330d7114f70ea42bfb4a41db368a3e3be6934a4097dd25728438ef73debb1f2ffdb07fec0f18049df13bdc5285dc5b").unwrap();
+        let uncompressed = qtum::PublicKey::from_str("0400232a2acfc9b43fa89f1b4f608fde335d330d7114f70ea42bfb4a41db368a3e3be6934a4097dd25728438ef73debb1f2ffdb07fec0f18049df13bdc5285dc5b").unwrap();
         t.pk_map.insert(String::from("A"), uncompressed);
         ms.translate_pk(&mut t).unwrap_err();
     }

@@ -11,8 +11,8 @@
 use core::convert::TryFrom;
 use core::fmt;
 
-use bitcoin::script::PushBytes;
-use bitcoin::{script, Address, Network, ScriptBuf};
+use qtum::script::PushBytes;
+use qtum::{script, Address, Network, ScriptBuf};
 
 use super::checksum::{self, verify_checksum};
 use super::{SortedMultiVec, Wpkh, Wsh};

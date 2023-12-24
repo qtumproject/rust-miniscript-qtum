@@ -1,3 +1,10 @@
+
+# Miniscript-qtum
+
+This is a fork of [rust-miniscript](https://github.com/rust-bitcoin/rust-miniscript) with support for Qtum blockchain.
+
+See below for the original README.
+
 ![Build](https://github.com/rust-bitcoin/rust-miniscript/workflows/Continuous%20integration/badge.svg)
 
 **Minimum Supported Rust Version:** 1.41.1

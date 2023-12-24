@@ -20,6 +20,7 @@
 use std::str::FromStr;
 
 use actual_rand as rand;
+use miniscript_qtum as miniscript;
 use bitcoin::hashes::{hash160, ripemd160, sha256, Hash};
 use bitcoin::secp256k1;
 use internals::hex::exts::DisplayHex;

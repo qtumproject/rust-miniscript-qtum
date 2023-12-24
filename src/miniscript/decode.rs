@@ -11,9 +11,9 @@ use core::marker::PhantomData;
 #[cfg(feature = "std")]
 use std::error;
 
-use bitcoin::constants::MAX_BLOCK_WEIGHT;
-use bitcoin::hashes::{hash160, ripemd160, sha256, Hash};
-use bitcoin::Sequence;
+use qtum::constants::MAX_BLOCK_WEIGHT;
+use qtum::hashes::{hash160, ripemd160, sha256, Hash};
+use qtum::Sequence;
 use sync::Arc;
 
 use crate::miniscript::lex::{Token as Tk, TokenIter};
@@ -24,7 +24,7 @@ use crate::miniscript::ScriptContext;
 use crate::prelude::*;
 #[cfg(doc)]
 use crate::Descriptor;
-use crate::{bitcoin, hash256, AbsLockTime, Error, Miniscript, MiniscriptKey, ToPublicKey};
+use crate::{qtum, hash256, AbsLockTime, Error, Miniscript, MiniscriptKey, ToPublicKey};
 
 fn return_none<T>(_: usize) -> Option<T> {
     None
@@ -36,15 +36,15 @@ pub trait ParseableKey: Sized + ToPublicKey + private::Sealed {
     fn from_slice(sl: &[u8]) -> Result<Self, KeyParseError>;
 }
 
-impl ParseableKey for bitcoin::PublicKey {
+impl ParseableKey for qtum::PublicKey {
     fn from_slice(sl: &[u8]) -> Result<Self, KeyParseError> {
-        bitcoin::PublicKey::from_slice(sl).map_err(KeyParseError::FullKeyParseError)
+        qtum::PublicKey::from_slice(sl).map_err(KeyParseError::FullKeyParseError)
     }
 }
 
-impl ParseableKey for bitcoin::secp256k1::XOnlyPublicKey {
+impl ParseableKey for qtum::secp256k1::XOnlyPublicKey {
     fn from_slice(sl: &[u8]) -> Result<Self, KeyParseError> {
-        bitcoin::secp256k1::XOnlyPublicKey::from_slice(sl)
+        qtum::secp256k1::XOnlyPublicKey::from_slice(sl)
             .map_err(KeyParseError::XonlyKeyParseError)
     }
 }
@@ -53,9 +53,9 @@ impl ParseableKey for bitcoin::secp256k1::XOnlyPublicKey {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum KeyParseError {
     /// Bitcoin PublicKey parse error
-    FullKeyParseError(bitcoin::key::Error),
+    FullKeyParseError(qtum::key::Error),
     /// Xonly key parse Error
-    XonlyKeyParseError(bitcoin::secp256k1::Error),
+    XonlyKeyParseError(qtum::secp256k1::Error),
 }
 
 impl fmt::Display for KeyParseError {
@@ -83,8 +83,8 @@ mod private {
     pub trait Sealed {}
 
     // Implement for those same types, but no others.
-    impl Sealed for super::bitcoin::PublicKey {}
-    impl Sealed for super::bitcoin::secp256k1::XOnlyPublicKey {}
+    impl Sealed for super::qtum::PublicKey {}
+    impl Sealed for super::qtum::secp256k1::XOnlyPublicKey {}
 }
 
 #[derive(Copy, Clone, Debug)]

@@ -10,8 +10,8 @@
 
 use core::fmt;
 
-use bitcoin::script::{self, PushBytes};
-use bitcoin::{Address, Network, ScriptBuf};
+use qtum::script::{self, PushBytes};
+use qtum::{Address, Network, ScriptBuf};
 
 use super::checksum::{self, verify_checksum};
 use crate::expression::{self, FromTree};

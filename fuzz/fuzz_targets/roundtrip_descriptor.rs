@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use honggfuzz::fuzz;
+use miniscript_qtum as miniscript;
 use miniscript::Descriptor;
 
 fn do_test(data: &[u8]) {

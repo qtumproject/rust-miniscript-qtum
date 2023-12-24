@@ -2,12 +2,12 @@ use std::collections::BTreeMap;
 use std::str::FromStr;
 
 use actual_base64 as base64;
-use bitcoin::sighash::SighashCache;
-use bitcoin::PrivateKey;
-use miniscript::bitcoin::consensus::encode::deserialize;
-use miniscript::bitcoin::hashes::hex::FromHex;
-use miniscript::bitcoin::psbt::PartiallySignedTransaction as Psbt;
-use miniscript::bitcoin::{
+use qtum::sighash::SighashCache;
+use qtum::PrivateKey;
+use miniscript::qtum::consensus::encode::deserialize;
+use miniscript::qtum::hashes::hex::FromHex;
+use miniscript::qtum::psbt::PartiallySignedTransaction as Psbt;
+use miniscript::qtum::{
     self, psbt, secp256k1, Address, Network, OutPoint, Script, Sequence, Transaction, TxIn, TxOut,
 };
 use miniscript::psbt::{PsbtExt, PsbtInputExt};
@@ -18,7 +18,7 @@ fn main() {
 
     let s = "wsh(t:or_c(pk(027a3565454fe1b749bccaef22aff72843a9c3efefd7b16ac54537a0c23f0ec0de),v:thresh(1,pkh(032d672a1a91cc39d154d366cd231983661b0785c7f27bc338447565844f4a6813),a:pkh(03417129311ed34c242c012cd0a3e0b9bca0065f742d0dfb63c78083ea6a02d4d9),a:pkh(025a687659658baeabdfc415164528065be7bcaade19342241941e556557f01e28))))#7hut9ukn";
     let bridge_descriptor = Descriptor::from_str(&s).unwrap();
-    //let bridge_descriptor = Descriptor::<bitcoin::PublicKey>::from_str(&s).expect("parse descriptor string");
+    //let bridge_descriptor = Descriptor::<qtum::PublicKey>::from_str(&s).expect("parse descriptor string");
     assert!(bridge_descriptor.sanity_check().is_ok());
     println!(
         "Bridge pubkey script: {}",
@@ -70,7 +70,7 @@ fn main() {
 
     let spend_tx = Transaction {
         version: 2,
-        lock_time: bitcoin::absolute::LockTime::from_consensus(5000),
+        lock_time: qtum::absolute::LockTime::from_consensus(5000),
         input: vec![],
         output: vec![],
     };
@@ -132,7 +132,7 @@ fn main() {
         .to_secp_msg();
 
     // Fixme: Take a parameter
-    let hash_ty = bitcoin::sighash::EcdsaSighashType::All;
+    let hash_ty = qtum::sighash::EcdsaSighashType::All;
 
     let sk1 = backup1_private.inner;
     let sk2 = backup2_private.inner;
@@ -149,7 +149,7 @@ fn main() {
 
     psbt.inputs[0].partial_sigs.insert(
         pk1,
-        bitcoin::ecdsa::Signature {
+        qtum::ecdsa::Signature {
             sig: sig1,
             hash_ty: hash_ty,
         },
@@ -164,7 +164,7 @@ fn main() {
     println!("{:#?}", psbt);
 
     let tx = psbt.extract_tx();
-    println!("{}", bitcoin::consensus::encode::serialize_hex(&tx));
+    println!("{}", qtum::consensus::encode::serialize_hex(&tx));
 }
 
 // Find the Outpoint by spk

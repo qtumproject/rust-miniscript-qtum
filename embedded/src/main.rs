@@ -34,11 +34,11 @@ fn main() -> ! {
     )))";
     hprintln!("descriptor {}", descriptor).unwrap();
     let desc =
-        miniscript::Descriptor::<miniscript::bitcoin::PublicKey>::from_str(descriptor).unwrap();
+        miniscript::Descriptor::<miniscript::qtum::PublicKey>::from_str(descriptor).unwrap();
 
     // Derive the P2SH address
     let p2sh_addr = desc
-        .address(miniscript::bitcoin::Network::Qtum)
+        .address(miniscript::qtum::Network::Qtum)
         .unwrap()
         .to_string();
     hprintln!("p2sh address {}", p2sh_addr).unwrap();
