@@ -8,11 +8,11 @@
 //! `https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki`
 //!
 
-use bitcoin::key::XOnlyPublicKey;
-use bitcoin::secp256k1::{self, Secp256k1};
-use bitcoin::sighash::Prevouts;
-use bitcoin::taproot::LeafVersion;
-use bitcoin::{PublicKey, Script, ScriptBuf, TxOut, Witness};
+use qtum::key::XOnlyPublicKey;
+use qtum::secp256k1::{self, Secp256k1};
+use qtum::sighash::Prevouts;
+use qtum::taproot::LeafVersion;
+use qtum::{PublicKey, Script, ScriptBuf, TxOut, Witness};
 
 use super::{sanity_check, Error, InputError, Psbt, PsbtInputSatisfier};
 use crate::prelude::*;
@@ -90,7 +90,7 @@ pub(super) fn get_scriptpubkey(psbt: &Psbt, index: usize) -> Result<ScriptBuf, I
 }
 
 // Get the spending utxo for this psbt input
-pub(super) fn get_utxo(psbt: &Psbt, index: usize) -> Result<&bitcoin::TxOut, InputError> {
+pub(super) fn get_utxo(psbt: &Psbt, index: usize) -> Result<&qtum::TxOut, InputError> {
     let inp = &psbt.inputs[index];
     let utxo = if let Some(ref witness_utxo) = inp.witness_utxo {
         witness_utxo
@@ -104,7 +104,7 @@ pub(super) fn get_utxo(psbt: &Psbt, index: usize) -> Result<&bitcoin::TxOut, Inp
 }
 
 /// Get the Prevouts for the psbt
-pub(super) fn prevouts(psbt: &Psbt) -> Result<Vec<&bitcoin::TxOut>, super::Error> {
+pub(super) fn prevouts(psbt: &Psbt) -> Result<Vec<&qtum::TxOut>, super::Error> {
     let mut utxos = vec![];
     for i in 0..psbt.inputs.len() {
         let utxo_ref = get_utxo(psbt, i).map_err(|e| Error::InputError(e, i))?;
@@ -129,7 +129,7 @@ fn get_descriptor(psbt: &Psbt, index: usize) -> Result<Descriptor<PublicKey>, In
     if script_pubkey.is_p2pk() {
         let script_pubkey_len = script_pubkey.len();
         let pk_bytes = &script_pubkey.to_bytes();
-        match bitcoin::PublicKey::from_slice(&pk_bytes[1..script_pubkey_len - 1]) {
+        match qtum::PublicKey::from_slice(&pk_bytes[1..script_pubkey_len - 1]) {
             Ok(pk) => Ok(Descriptor::new_pk(pk)),
             Err(e) => Err(InputError::from(e)),
         }
@@ -142,7 +142,7 @@ fn get_descriptor(psbt: &Psbt, index: usize) -> Result<Descriptor<PublicKey>, In
             // Partial sigs loses the compressed flag that is necessary
             // TODO: See https://github.com/rust-bitcoin/rust-bitcoin/pull/836
             // The type checker will fail again after we update to 0.28 and this can be removed
-            let addr = bitcoin::Address::p2pkh(&pk, bitcoin::Network::Qtum);
+            let addr = qtum::Address::p2pkh(&pk, qtum::Network::Qtum);
             *script_pubkey == addr.script_pubkey()
         });
         match partial_sig_contains_pk {
@@ -154,7 +154,7 @@ fn get_descriptor(psbt: &Psbt, index: usize) -> Result<Descriptor<PublicKey>, In
         let partial_sig_contains_pk = inp.partial_sigs.iter().find(|&(&pk, _sig)| {
             // Indirect way to check the equivalence of pubkey-hashes.
             // Create a pubkey hash and check if they are the same.
-            let addr = bitcoin::Address::p2wpkh(&pk, bitcoin::Network::Qtum)
+            let addr = qtum::Address::p2wpkh(&pk, qtum::Network::Qtum)
                 .expect("Address corresponding to valid pubkey");
             *script_pubkey == addr.script_pubkey()
         });
@@ -174,7 +174,7 @@ fn get_descriptor(psbt: &Psbt, index: usize) -> Result<Descriptor<PublicKey>, In
                     p2wsh_expected: script_pubkey.clone(),
                 });
             }
-            let ms = Miniscript::<bitcoin::PublicKey, Segwitv0>::parse_with_ext(
+            let ms = Miniscript::<qtum::PublicKey, Segwitv0>::parse_with_ext(
                 witness_script,
                 &ExtParams::allow_all(),
             )?;
@@ -201,7 +201,7 @@ fn get_descriptor(psbt: &Psbt, index: usize) -> Result<Descriptor<PublicKey>, In
                                 p2wsh_expected: redeem_script.clone(),
                             });
                         }
-                        let ms = Miniscript::<bitcoin::PublicKey, Segwitv0>::parse_with_ext(
+                        let ms = Miniscript::<qtum::PublicKey, Segwitv0>::parse_with_ext(
                             witness_script,
                             &ExtParams::allow_all(),
                         )?;
@@ -212,7 +212,7 @@ fn get_descriptor(psbt: &Psbt, index: usize) -> Result<Descriptor<PublicKey>, In
                 } else if redeem_script.is_v0_p2wpkh() {
                     // 6. `ShWpkh` case
                     let partial_sig_contains_pk = inp.partial_sigs.iter().find(|&(&pk, _sig)| {
-                        let addr = bitcoin::Address::p2wpkh(&pk, bitcoin::Network::Qtum)
+                        let addr = qtum::Address::p2wpkh(&pk, qtum::Network::Qtum)
                             .expect("Address corresponding to valid pubkey");
                         *redeem_script == addr.script_pubkey()
                     });
@@ -226,7 +226,7 @@ fn get_descriptor(psbt: &Psbt, index: usize) -> Result<Descriptor<PublicKey>, In
                         return Err(InputError::NonEmptyWitnessScript);
                     }
                     if let Some(ref redeem_script) = inp.redeem_script {
-                        let ms = Miniscript::<bitcoin::PublicKey, Legacy>::parse_with_ext(
+                        let ms = Miniscript::<qtum::PublicKey, Legacy>::parse_with_ext(
                             redeem_script,
                             &ExtParams::allow_all(),
                         )?;
@@ -245,7 +245,7 @@ fn get_descriptor(psbt: &Psbt, index: usize) -> Result<Descriptor<PublicKey>, In
         if inp.redeem_script.is_some() {
             return Err(InputError::NonEmptyRedeemScript);
         }
-        let ms = Miniscript::<bitcoin::PublicKey, BareCtx>::parse_with_ext(
+        let ms = Miniscript::<qtum::PublicKey, BareCtx>::parse_with_ext(
             &script_pubkey,
             &ExtParams::allow_all(),
         )?;
@@ -379,7 +379,7 @@ fn finalize_input_helper<C: secp256k1::Verification>(
         }
     };
 
-    let witness = bitcoin::Witness::from_slice(&witness);
+    let witness = qtum::Witness::from_slice(&witness);
     let utxos = prevouts(psbt)?;
     let utxos = &Prevouts::All(&utxos);
     interpreter_inp_check(psbt, secp, index, utxos, &witness, &script_sig)?;
@@ -436,7 +436,7 @@ pub(super) fn finalize_input<C: secp256k1::Verification>(
 
 #[cfg(test)]
 mod tests {
-    use bitcoin::hashes::hex::FromHex;
+    use qtum::hashes::hex::FromHex;
 
     use super::*;
     use crate::psbt::PsbtExt;

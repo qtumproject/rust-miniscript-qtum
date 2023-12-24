@@ -8,7 +8,7 @@
 
 use core::fmt;
 
-use bitcoin::{Address, Network, ScriptBuf};
+use qtum::{Address, Network, ScriptBuf};
 
 use super::checksum::{self, verify_checksum};
 use super::SortedMultiVec;

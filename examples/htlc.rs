@@ -16,13 +16,14 @@
 
 use std::str::FromStr;
 
-use bitcoin::Network;
+use qtum::Network;
+use miniscript_qtum as miniscript;
 use miniscript::descriptor::Wsh;
 use miniscript::policy::{Concrete, Liftable};
 
 fn main() {
     // HTLC policy with 10:1 odds for happy (co-operative) case compared to uncooperative case.
-    let htlc_policy = Concrete::<bitcoin::PublicKey>::from_str(&format!("or(10@and(sha256({secret_hash}),pk({redeem_identity})),1@and(older({expiry}),pk({refund_identity})))",
+    let htlc_policy = Concrete::<qtum::PublicKey>::from_str(&format!("or(10@and(sha256({secret_hash}),pk({redeem_identity})),1@and(older({expiry}),pk({refund_identity})))",
                                                   secret_hash = "1111111111111111111111111111111111111111111111111111111111111111",
                                                   redeem_identity = "022222222222222222222222222222222222222222222222222222222222222222",
                                                   refund_identity = "020202020202020202020202020202020202020202020202020202020202020202",

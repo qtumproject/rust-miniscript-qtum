@@ -11,8 +11,8 @@
 use core::fmt;
 use core::str::FromStr;
 
-use bitcoin::hashes::{hash160, Hash};
-use bitcoin::{absolute, opcodes, script, Sequence};
+use qtum::hashes::{hash160, Hash};
+use qtum::{absolute, opcodes, script, Sequence};
 use sync::Arc;
 
 use crate::miniscript::context::SigType;

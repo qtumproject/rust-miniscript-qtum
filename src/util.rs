@@ -2,15 +2,15 @@
 
 use core::convert::TryFrom;
 
-use bitcoin::hashes::Hash;
-use bitcoin::script::{self, PushBytes, ScriptBuf};
-use bitcoin::PubkeyHash;
+use qtum::hashes::Hash;
+use qtum::script::{self, PushBytes, ScriptBuf};
+use qtum::PubkeyHash;
 
 use crate::miniscript::context;
 use crate::prelude::*;
 use crate::{ScriptContext, ToPublicKey};
 pub(crate) fn varint_len(n: usize) -> usize {
-    bitcoin::VarInt(n as u64).len()
+    qtum::VarInt(n as u64).len()
 }
 
 // Helper function to calculate witness size

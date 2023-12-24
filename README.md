@@ -2,6 +2,13 @@
 
 **Minimum Supported Rust Version:** 1.41.1
 
+# Miniscript-qtum
+
+This is a fork of [rust-miniscript](https://github.com/rust-bitcoin/rust-miniscript) with support for Qtum blockchain.
+
+See below for the original README.
+
+
 # Miniscript
 
 Library for handling [Miniscript](http://bitcoin.sipa.be/miniscript/),

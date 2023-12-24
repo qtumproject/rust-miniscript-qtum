@@ -17,8 +17,9 @@
 use std::collections::HashMap;
 use std::str::FromStr;
 
-use bitcoin::blockdata::witness::Witness;
-use bitcoin::{absolute, ecdsa, secp256k1, Sequence};
+use qtum::blockdata::witness::Witness;
+use qtum::{absolute, ecdsa, secp256k1, Sequence};
+use miniscript_qtum as miniscript;
 
 fn main() {
     let mut tx = spending_transaction();
@@ -27,7 +28,7 @@ fn main() {
 
     // Descriptor for the output being spent.
     let s = format!("wsh(multi(2,{},{},{}))", pks[0], pks[1], pks[2],);
-    let descriptor = miniscript::Descriptor::<bitcoin::PublicKey>::from_str(&s).unwrap();
+    let descriptor = miniscript::Descriptor::<qtum::PublicKey>::from_str(&s).unwrap();
 
     // Check weight for witness satisfaction cost ahead of time.
     // 106 (serialized witnessScript)
@@ -35,7 +36,7 @@ fn main() {
     assert_eq!(descriptor.max_weight_to_satisfy().unwrap(), 253);
 
     // Sometimes it is necessary to have additional information to get the
-    // `bitcoin::PublicKey` from the `MiniscriptKey` which can be supplied by
+    // `qtum::PublicKey` from the `MiniscriptKey` which can be supplied by
     // the `to_pk_ctx` parameter. For example, when calculating the script
     // pubkey of a descriptor with xpubs, the secp context and child information
     // maybe required.
@@ -63,7 +64,7 @@ fn main() {
     // Attempt to satisfy at age 0, height 0.
     let original_txin = tx.input[0].clone();
 
-    let mut sigs = HashMap::<bitcoin::PublicKey, ecdsa::Signature>::new();
+    let mut sigs = HashMap::<qtum::PublicKey, ecdsa::Signature>::new();
 
     // Doesn't work with no signatures.
     assert!(descriptor.satisfy(&mut tx.input[0], &sigs).is_err());
@@ -88,35 +89,35 @@ fn main() {
 }
 
 // Transaction which spends some output.
-fn spending_transaction() -> bitcoin::Transaction {
-    bitcoin::Transaction {
+fn spending_transaction() -> qtum::Transaction {
+    qtum::Transaction {
         version: 2,
         lock_time: absolute::LockTime::ZERO,
-        input: vec![bitcoin::TxIn {
+        input: vec![qtum::TxIn {
             previous_output: Default::default(),
-            script_sig: bitcoin::ScriptBuf::new(),
+            script_sig: qtum::ScriptBuf::new(),
             sequence: Sequence::MAX,
             witness: Witness::default(),
         }],
-        output: vec![bitcoin::TxOut {
-            script_pubkey: bitcoin::ScriptBuf::new(),
+        output: vec![qtum::TxOut {
+            script_pubkey: qtum::ScriptBuf::new(),
             value: 100_000_000,
         }],
     }
 }
 
-fn list_of_three_arbitrary_public_keys() -> Vec<bitcoin::PublicKey> {
+fn list_of_three_arbitrary_public_keys() -> Vec<qtum::PublicKey> {
     #[cfg_attr(feature="cargo-fmt", rustfmt_skip)]
     vec![
-        bitcoin::PublicKey::from_slice(&[2; 33]).expect("key 1"),
-        bitcoin::PublicKey::from_slice(&[
+        qtum::PublicKey::from_slice(&[2; 33]).expect("key 1"),
+        qtum::PublicKey::from_slice(&[
             0x02,
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         ]).expect("key 2"),
-        bitcoin::PublicKey::from_slice(&[
+        qtum::PublicKey::from_slice(&[
             0x03,
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -138,6 +139,6 @@ fn random_signature_from_the_blockchain() -> ecdsa::Signature {
              531d75c136272f127a5dc14acc0722301cbddc222262934151f140da345af177",
         )
         .unwrap(),
-        hash_ty: bitcoin::sighash::EcdsaSighashType::All,
+        hash_ty: qtum::sighash::EcdsaSighashType::All,
     }
 }

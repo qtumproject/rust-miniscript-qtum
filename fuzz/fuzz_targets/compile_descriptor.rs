@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use honggfuzz::fuzz;
+use miniscript_qtum as miniscript;
 use miniscript::{policy, Miniscript, Segwitv0};
 use policy::Liftable;
 
